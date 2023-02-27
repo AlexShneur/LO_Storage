@@ -34,7 +34,7 @@ set(PROJECT_SOURCES
 		pgoperations.h
 )
 
-add_executable(LO_Storage
+add_executable(LO_Storage main.cpp
 	${PROJECT_SOURCES}
 	
 target_include_directories(LO_Storage
