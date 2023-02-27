@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.5)
 
 project(LO_Storage VERSION 0.1 LANGUAGES CXX)
 
@@ -10,6 +10,8 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(QT_VERSION_MAJOR 5)
 
 find_package(QT NAMES Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
@@ -34,7 +36,7 @@ set(PROJECT_SOURCES
 		pgoperations.h
 )
 
-add_executable(LO_Storage main.cpp
+add_executable(LO_Storage
 	${PROJECT_SOURCES}
 	
 target_include_directories(LO_Storage
