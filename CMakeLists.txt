@@ -38,7 +38,7 @@ add_executable(LO_Storage
 	${PROJECT_SOURCES}
 	
 target_include_directories(LO_Storage
-    PRIVATE "${CMAKE_BINARY_DIR}"
+    PRIVATE "${CMAKE_BINARY_DIR}/include"
 )
 
 target_link_libraries(LO_Storage PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
