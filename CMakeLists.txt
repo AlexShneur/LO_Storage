@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 project(LO_Storage VERSION 0.1 LANGUAGES CXX)
 
@@ -37,7 +37,7 @@ set(PROJECT_SOURCES
 )
 
 add_executable(LO_Storage
-	${PROJECT_SOURCES}
+	${PROJECT_SOURCES})
 	
 target_include_directories(LO_Storage
     PRIVATE "${CMAKE_BINARY_DIR}/include"
