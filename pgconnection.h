@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <libpq-fe.h>
+#include <string>
 
 class PGConnection
 {
