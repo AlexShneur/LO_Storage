@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 project(LO_Storage VERSION 0.1 LANGUAGES CXX)
 
@@ -15,6 +15,7 @@ set(QT_VERSION_MAJOR 5)
 
 find_package(QT NAMES Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(PostgreSQL REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -44,6 +45,7 @@ target_include_directories(LO_Storage
 )
 
 target_link_libraries(LO_Storage PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(LO_Storage PRIVATE PostgreSQL::PostgreSQL)
 
 install(TARGETS LO_Storage RUNTIME DESTINATION bin)
 
