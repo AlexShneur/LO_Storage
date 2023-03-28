@@ -1,5 +1,4 @@
 #include "pgconnection.h"
-#include <stdexcept>
 
 PGConnection::PGConnection(std::string _dbhost,
                            int         _dbport,

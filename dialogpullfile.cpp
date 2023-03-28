@@ -1,6 +1,5 @@
 #include "dialogpullfile.h"
 #include "pgoperations.h"
-#include "qabstractitemmodel.h"
 #include "ui_dialogpullfile.h"
 #include <QMessageBox>
 
@@ -18,17 +17,11 @@ DialogPullFile::DialogPullFile(QWidget *parent) :
     ui->twRecords->setHorizontalHeaderItem(5, new QTableWidgetItem(tr("Oid файла")));
 
     ui->twRecords->setSelectionMode(QAbstractItemView::SingleSelection);
-    fOid = -1;
 }
 
 DialogPullFile::~DialogPullFile()
 {
     delete ui;
-}
-
-std::pair<QString,int> DialogPullFile::GetSelectedFileNameAndOid() const
-{
-    return std::make_pair(fName,fOid);
 }
 
 void DialogPullFile::SetData(const std::vector<std::string> &values)
@@ -75,8 +68,11 @@ void DialogPullFile::on_twRecords_cellClicked(int row, int column)
 {
     if (row!=0)
     {
-        fOid = ui->twRecords->item(row,PARAMS_COUNT)->text().toInt();
-        fName = ui->twRecords->item(row,PARAMS_COUNT-4)->text();
+        fd.fName = ui->twRecords->item(row,PARAMS_COUNT-4)->text();
+        fd.fDesc = ui->twRecords->item(row,PARAMS_COUNT-3)->text();
+        fd.fSize = ui->twRecords->item(row,PARAMS_COUNT-2)->text().toLongLong();
+        fd.downloadedDate = QDateTime::fromString(ui->twRecords->item(row,PARAMS_COUNT-1)->text());
+        fd.DBIndex = ui->twRecords->item(row,PARAMS_COUNT)->text().toInt();
     }
 }
 

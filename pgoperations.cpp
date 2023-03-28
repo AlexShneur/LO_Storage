@@ -1,9 +1,7 @@
 #include "pgoperations.h"
 #include "libpq/libpq-fs.h"
 
-#define BUFSIZE         1024
-
-PGOperations::PGOperations()
+PGOperations::PGOperations(QObject *parent): QObject(parent)
 {
     lastError.clear();
 }
@@ -25,6 +23,7 @@ Oid PGOperations::ImportFile(const std::shared_ptr<PGconn> conn, QFile& file)
     {
         bytesRead = file.read(buf,BUFSIZE);
         bytesWritten += lo_write(conn.get(), lobj_fd, buf, bytesRead);
+        emit inProgress(1);
     }
     while (bytesRead>0);
 
@@ -59,6 +58,7 @@ void PGOperations::ExportFile(const std::shared_ptr<PGconn> conn, Oid lobjId, co
         {
             bytesRead = lo_read(conn.get(), lobj_fd, buf, BUFSIZE);
             bytesWritten += file.write(buf,bytesRead);
+            emit inProgress(1);
         }
         while (bytesRead>0);
     }

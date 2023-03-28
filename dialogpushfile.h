@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include "mainwindow.h"
-#include "qdatetime.h"
 
 namespace Ui {
 class DialogPushFile;
@@ -18,7 +17,7 @@ public:
                             stFileDescription _fd);
     ~DialogPushFile();
 
-    stFileDescription GetFileDescription() const
+    const stFileDescription& GetFileDescription() const
     {
         return fd;
     }

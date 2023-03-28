@@ -2,6 +2,7 @@
 #define DIALOGPULLFILE_H
 
 #include <QDialog>
+#include "mainwindow.h"
 
 namespace Ui {
 class DialogPullFile;
@@ -16,7 +17,11 @@ public:
     ~DialogPullFile();
 
     void SetData(const std::vector<std::string>& values);
-    std::pair<QString,int> GetSelectedFileNameAndOid() const;
+
+    const stFileDescription& GetFileDescription() const
+    {
+        return fd;
+    }
 
 private slots:
     void on_buttonBox_accepted();
@@ -27,8 +32,7 @@ private slots:
 
 private:
     Ui::DialogPullFile *ui;
-    QString fName;
-    int fOid;
+    stFileDescription fd;
 };
 
 #endif // DIALOGPULLFILE_H

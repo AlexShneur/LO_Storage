@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     loadParamsFromConfigFile();
+    ui->progressBar->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -63,7 +64,8 @@ void MainWindow::on_pbConnect_clicked()
                                  ui->leUserName->text().toStdString(),
                                  ui->lePassword->text().toStdString());
 
-        DBOperations = std::make_shared<PGOperations>();
+        DBOperations = std::make_shared<PGOperations>(this);
+        connect(DBOperations.get(), SIGNAL(inProgress(int)), this, SLOT(updateProgress(int)));
 
         //создаём таблицу files в бд
         std::string query = "CREATE TABLE IF NOT EXISTS files "
@@ -147,8 +149,11 @@ void MainWindow::on_pbPush_clicked()
                 auto dialogPushFile = new DialogPushFile(this,fd);
                 if (dialogPushFile->exec()==QDialog::Accepted)
                 {
+                    ui->progressBar->setVisible(true);
                     fd = dialogPushFile->GetFileDescription();
                     delete dialogPushFile;
+
+                    setProgressBarParams(fd);
 
                     auto lo = DBOperations->ImportFile(DBConnection->connection(),file);
                     auto err = DBOperations->GetLastError();
@@ -170,6 +175,7 @@ void MainWindow::on_pbPush_clicked()
                         }
                         else
                         {
+                            ui->progressBar->setValue(ui->progressBar->maximum());
                             QMessageBox::information(this, this->windowTitle(),tr("Файл успешно загружен в БД."));
                         }
                     }
@@ -177,12 +183,24 @@ void MainWindow::on_pbPush_clicked()
                     {
                         QMessageBox::critical(this, this->windowTitle(),QString("%1 %2").arg("Не удалось загрузить файл в БД. Ошибка: ").arg(QString::fromStdString(err)));
                     }
+                    ui->progressBar->setVisible(false);
                 }
             }
         }
     }
 }
 
+void MainWindow::updateProgress(int val)
+{
+    ui->progressBar->setValue(ui->progressBar->value()+val);
+}
+
+void MainWindow::setProgressBarParams(const stFileDescription& fd) const
+{
+    int step_count = static_cast<int>(fd.fSize/BUFSIZE);
+    ui->progressBar->setRange(0, step_count);
+    ui->progressBar->setValue(0);
+}
 
 void MainWindow::on_pbPull_clicked()
 {
@@ -200,19 +218,23 @@ void MainWindow::on_pbPull_clicked()
         dialogPullFile->show();
         if (dialogPullFile->exec()==QDialog::Accepted)
         {
-            auto fileParams = dialogPullFile->GetSelectedFileNameAndOid();
-            if (fileParams.second!=-1)
+            auto fileDesc = dialogPullFile->GetFileDescription();
+            if (fileDesc.DBIndex!=-1)
             {
+                ui->progressBar->setVisible(true);
                 QString dir = QDir::homePath();
                 auto fileName = QFileDialog::getSaveFileName(this,
-                    tr("Сохранить файл"), dir+"/"+fileParams.first,
+                    tr("Сохранить файл"), dir+"/"+fileDesc.fName,
                     tr("Все файлы (*)"));
                 if (!fileName.isEmpty())
                 {
-                    DBOperations->ExportFile(DBConnection->connection(),fileParams.second,fileName);
+                    setProgressBarParams(fileDesc);
+
+                    DBOperations->ExportFile(DBConnection->connection(),fileDesc.DBIndex,fileName);
                     auto err = DBOperations->GetLastError();
                     if (err.empty())
                     {
+                        ui->progressBar->setValue(ui->progressBar->maximum());
                         QMessageBox::information(this, this->windowTitle(),tr("Файл успешно выгружен из БД."));
                     }
                     else
@@ -220,6 +242,7 @@ void MainWindow::on_pbPull_clicked()
                         QMessageBox::critical(this, this->windowTitle(),QString("%1 %2").arg("Не удалось выгрузить файл из БД. Ошибка: ").arg(QString::fromStdString(err)));
                     }
                 }
+                ui->progressBar->setVisible(false);
             }
         }
     }

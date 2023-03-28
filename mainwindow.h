@@ -27,6 +27,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+Q_SLOT void updateProgress(int val);
+
 private slots:
     void on_pbConnect_clicked();
 
@@ -39,6 +41,7 @@ private slots:
 private:
     void saveParamsToConfigFile() const;
     void loadParamsFromConfigFile();
+    void setProgressBarParams(const stFileDescription& fd) const;
 
     Ui::MainWindow *ui;
     std::shared_ptr<PGConnection> DBConnection = nullptr;
