@@ -5,7 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++17
 
 INCLUDEPATH += "include"
-LIBS += -L"libs" -llibpq    #находящуюся внутри проекта папку libs с библиотеками PostgreSQL необходимо скопировать туда, где собирается проект.
+LIBS += -L"C:\Program Files (x86)\PostgreSQL\10\bin" -lpq    #находящуюся внутри проекта папку libs с библиотеками PostgreSQL необходимо скопировать туда, где собирается проект.
                             #сохраняемые параметры подключения к БД лежат в файле configParams.txt, который находится рядом с папкой debug
 
 SOURCES += \

@@ -31,10 +31,17 @@ void DialogPushFile::on_buttonBox_accepted()
 {
     try
     {
-        fd.fName = ui->leFileName->text();
-        fd.fDesc = ui->teFileDescription->toPlainText();
-        fd.downloadedDate = ui->dteDownloadDate->dateTime();
-        accept();
+        if (!ui->leFileName->text().isEmpty() && !ui->leFileName->text().startsWith(' '))
+        {
+            fd.fName = ui->leFileName->text();
+            fd.fDesc = ui->teFileDescription->toPlainText();
+            fd.downloadedDate = ui->dteDownloadDate->dateTime();
+            accept();
+        }
+        else
+        {
+            QMessageBox::information(this, this->windowTitle(), tr("Введите корректное наименование файла!"));
+        }
     }
     catch (std::exception& ex)
     {

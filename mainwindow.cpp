@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     loadParamsFromConfigFile();
-    ui->progressBar->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -149,7 +148,6 @@ void MainWindow::on_pbPush_clicked()
                 auto dialogPushFile = new DialogPushFile(this,fd);
                 if (dialogPushFile->exec()==QDialog::Accepted)
                 {
-                    ui->progressBar->setVisible(true);
                     fd = dialogPushFile->GetFileDescription();
                     delete dialogPushFile;
 
@@ -183,7 +181,6 @@ void MainWindow::on_pbPush_clicked()
                     {
                         QMessageBox::critical(this, this->windowTitle(),QString("%1 %2").arg("Не удалось загрузить файл в БД. Ошибка: ").arg(QString::fromStdString(err)));
                     }
-                    ui->progressBar->setVisible(false);
                 }
             }
         }
@@ -221,7 +218,6 @@ void MainWindow::on_pbPull_clicked()
             auto fileDesc = dialogPullFile->GetFileDescription();
             if (fileDesc.DBIndex!=-1)
             {
-                ui->progressBar->setVisible(true);
                 QString dir = QDir::homePath();
                 auto fileName = QFileDialog::getSaveFileName(this,
                     tr("Сохранить файл"), dir+"/"+fileDesc.fName,
@@ -242,7 +238,6 @@ void MainWindow::on_pbPull_clicked()
                         QMessageBox::critical(this, this->windowTitle(),QString("%1 %2").arg("Не удалось выгрузить файл из БД. Ошибка: ").arg(QString::fromStdString(err)));
                     }
                 }
-                ui->progressBar->setVisible(false);
             }
         }
     }

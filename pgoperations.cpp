@@ -15,20 +15,15 @@ Oid PGOperations::ImportFile(const std::shared_ptr<PGconn> conn, QFile& file)
     PQexec(conn.get(), "BEGIN");
     auto lobj_fd = lo_open(conn.get(), lobjId, INV_WRITE);
 
-    auto bytesWritten = 0;
     auto bytesRead = 0;
     char buf[BUFSIZE];
-    auto fsize = file.size();
     do
     {
         bytesRead = file.read(buf,BUFSIZE);
-        bytesWritten += lo_write(conn.get(), lobj_fd, buf, bytesRead);
+        lo_write(conn.get(), lobj_fd, buf, bytesRead);
         emit inProgress(1);
     }
     while (bytesRead>0);
-
-    if (bytesWritten!=fsize)
-        lastError = "Error while importing file";
 
     PQexec(conn.get(), "END");
 
@@ -51,13 +46,12 @@ void PGOperations::ExportFile(const std::shared_ptr<PGconn> conn, Oid lobjId, co
     }
     else
     {
-        auto bytesWritten = 0;
         auto bytesRead = 0;
         char buf[BUFSIZE];
         do
         {
             bytesRead = lo_read(conn.get(), lobj_fd, buf, BUFSIZE);
-            bytesWritten += file.write(buf,bytesRead);
+            file.write(buf,bytesRead);
             emit inProgress(1);
         }
         while (bytesRead>0);
